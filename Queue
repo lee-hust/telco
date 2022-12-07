@@ -1,0 +1,74 @@
+//Queue manipulation
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node
+{
+    int data;
+    struct Node* next;
+}Node;
+Node *head, *tail = NULL;
+
+Node* makenode(int x)
+{
+    Node *p = (Node*)malloc(sizeof(Node));
+    p->data = x;
+    p->next = NULL;
+    return p;
+}
+
+int queueEmpty()
+{
+    return head == NULL;
+}
+
+void PUSH(int v)
+{
+    Node *p = makenode(v);
+    if (queueEmpty())
+    {
+        head = p;
+        tail = p;
+        return;
+    }
+    tail->next = p;
+    tail = p;
+}
+void POP()
+{
+    if (queueEmpty())
+    {
+        printf("NULL\n");
+        return;
+    }
+    Node *tmp = head;
+    int v = head->data;
+    head = head->next;
+    if (head == NULL)
+        tail = NULL;
+    free(tmp);
+    printf("%d\n", v);
+}
+
+int main(void)
+{
+    char order[50];
+    while(1)
+    {
+        scanf("%s", order);
+        if (strcmp(order,"PUSH") == 0)
+        {
+            int x;
+            scanf("%d", &x);
+            PUSH(x);
+        }
+        else if (strcmp(order, "POP") == 0)
+        {
+            POP();
+        }
+        else 
+            break;
+    }
+    return 0;
+}

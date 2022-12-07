@@ -1,0 +1,47 @@
+//Array equality
+#include <stdio.h>
+#define MAX 100000
+int T;
+int result[MAX];
+int x = 0;
+int check(int n, int m, int a[MAX], int b[MAX])
+{
+    if (n!=m) 
+    {
+        result[x] = 0;
+        return 0;
+    }
+    else
+    {
+        for (int k = 0; k < n; k++)
+        {
+            if(a[k]!=b[k])
+            {
+                result[x] = 0;
+                return 0;
+            }
+        }
+        result[x] = 1;
+        x++;
+        return 1;
+    }
+    return 1;
+}
+int main(void)
+{
+    scanf("%d", &T);
+    for (int t = 1; t<=T; t++)
+    {
+        int n; int m;
+        scanf("%d %d", &n,&m);
+        int first[MAX]; int sec[MAX];
+        for (int i = 0; i < n; i++)
+            scanf("%d", &first[i]);
+        for (int j = 0; j < m; j++)
+            scanf("%d", &sec[j]);
+        check(n,m,first,sec);
+    }
+    
+    for (int y = 0; y < T; y++) printf("%d\n", result[y]);
+    return 0;
+}

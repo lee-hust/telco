@@ -1,0 +1,35 @@
+#include <stdio.h>
+#define N 10000000
+//Stock increase
+int n;
+int price[N];
+int count;
+void numberofdays(int price[N], int n, int count)
+{
+    int result = 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (price[i] > price[i-1])
+        {
+            count++;
+            if (count > result)
+                result = count;
+        }
+        else
+        {
+            count = 1;
+            continue;
+        }
+    }
+    printf("%d\n", result);
+}
+
+int main(void)
+{
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++)
+        scanf("%d", &price[i]);
+    count = 1;
+    numberofdays(price,n,count);
+    return 0;
+}

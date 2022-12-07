@@ -1,0 +1,211 @@
+//Binary search tree and operations
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#define N 100000
+typedef struct Node
+{
+    int val;
+    struct Node* left;
+    struct Node* right;
+    struct Node* parent;
+}Node;
+Node *new_node(int u)
+{
+    Node *p = (Node*)malloc(sizeof(Node));
+    p->val = u;
+    p->left = NULL;
+    p->right = NULL;
+    p->parent = NULL;
+    return p;
+}
+Node *insert(Node *r, int x)
+{
+    if (r==NULL)
+        return new_node(x);
+    else if (x < r->val)
+    {
+        Node *p = insert(r->left,x);
+        r->left = p;
+        p->parent = r; 
+    }
+    else if (x > r->val)
+    {
+        Node *p = insert(r->right,x);
+        r->right = p;
+        p->parent = r;
+    }
+    return r;    
+}
+Node *search(Node *r, int target)
+{
+    if (r==NULL)
+        return NULL;
+    else if (r->val == target) return r;
+    else if (target<r->val)
+        return search(r->left,target);
+    else return search(r->right, target);
+}
+Node *find_min(Node* r)
+{
+    if (r==NULL)
+        return NULL;
+    else
+    {
+        if (r->left==NULL)
+            return r;
+        else return find_min(r->left);
+    }
+    return NULL;
+}
+Node *find_max(Node* r)
+{
+    if (r==NULL)
+        return NULL;
+    else
+    {
+        if (r->right==NULL)
+            return r;
+        else return find_max(r->right);
+    }
+    return NULL;
+}
+void preOrder(Node *r)
+{
+    if (r==NULL) return;
+    printf("%d ", r->val);
+    preOrder(r->left);
+    preOrder(r->right);
+}
+void inOrder(Node *r)
+{
+    if (r == NULL) return;
+    inOrder(r->left);
+    printf("%d ", r->val);
+    inOrder(r->right);
+}
+void postOrder(Node *r)
+{
+    if (r==NULL) return;
+    postOrder(r->left);
+    postOrder(r->right);
+    printf("%d ", r->val); 
+}
+Node *predecessor(Node *r, Node *x) //Find the predecessor of the node *x
+{
+    if (x->left != NULL)
+        return find_max(x->left);
+    Node *p = x->parent;
+    while (p!=NULL && x==p->left)
+    {
+        x = p;
+        p = p->parent;
+    }
+    return p;
+}
+Node *successor(Node *r, Node *x)
+{
+    if (x->right != NULL)
+        return find_min(x->right);
+    Node *p = x->parent;
+    while (p!=NULL && x==p->right)
+    {
+        x = p;
+        p = p->parent;
+    }
+    return p;
+}
+Node *delete(Node *r, int k)
+{
+    Node *y;
+    if (r==NULL) return NULL;
+    else if (k < r->val)
+        r->left = delete(r->left, k);
+    else if (k > r->val)
+        r->right = delete(r->right, k);
+    else
+    if (r->left!=NULL && r->right!=NULL)
+    {
+        y = find_min(r->right);
+        r->val = y->val;
+        r->right = delete(r->right, r->val);
+    }
+    else
+    {
+        y = r;
+        if (r->left == NULL) r = r->right;
+        else if (r->right == NULL) r = r->left;
+        free(y);
+    }
+    return r;
+}
+int main(void)
+{
+    Node *root = NULL;
+    char input[N];
+    int r;
+    scanf("%s", input);
+    scanf("%d", &r);
+    root = insert(root,r);
+    while (1)
+    {
+        char cmd[N];
+        scanf("%s", cmd);
+        if (strcmp(cmd,"insert") == 0)
+        {
+            int k;
+            scanf("%d", &k);
+            insert(root,k);
+        }
+        else if (strcmp(cmd,"preorder") == 0)
+        {
+            preOrder(root);
+            printf("\n");
+        }
+        else if (strcmp(cmd,"postorder") == 0)
+        {
+            postOrder(root);
+            printf("\n");
+        }
+        else if (strcmp(cmd,"inorder") == 0)
+        {
+            inOrder(root);
+            printf("\n");
+        }
+        else if (strcmp(cmd,"findmax") == 0)
+        {
+            Node *p = find_max(root);
+            printf("%d\n", p->val);
+        }
+        else if (strcmp(cmd,"findmin") == 0)
+        {
+            Node *p = find_min(root);
+            printf("%d\n", p->val);
+        }
+        else if (strcmp(cmd,"predecessor") == 0)
+        {
+            int k;
+            scanf("%d", &k);
+            Node *x = search(root,k);
+            Node *p = predecessor(root,x);
+            printf("%d\n", p->val);
+        }
+        else if (strcmp(cmd,"successor") == 0)
+        {
+            int k;
+            scanf("%d", &k);
+            Node *p = successor(root,search(root,k));
+            printf("%d\n", p->val);
+        }
+        else if (strcmp(cmd,"delete") == 0)
+        {
+            int x;
+            scanf("%d", &x);
+            delete(root,x);
+        }
+        else
+            break;
+    }
+    
+    return 0;
+}

@@ -1,0 +1,230 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio_ext.h>
+#define N 10000
+int n;
+int v;
+
+//Set up the linked-list
+typedef struct Node
+{
+    int data;
+    struct Node *next;
+}Node;
+Node *head = NULL; Node *tail = NULL;
+
+//Add more nodes to the linked-list
+Node* add_node(int v)
+{
+    Node *p = (Node *)malloc(sizeof(Node));
+    p->data = v;
+    p->next = NULL;
+    if (head == NULL)
+    {
+        head = p;
+        tail = p;
+    }
+    else
+    {
+        tail->next = p;
+        tail = p;
+    }
+    return p;
+}
+
+//Create new nodes
+Node* make_new_node(int v)
+{
+    Node *p = (Node *)malloc(sizeof(Node));
+    p->data = v;
+    p->next = NULL;
+    return p;
+}
+
+int check_node(int key)
+{
+    Node *e = head;
+    while (e != NULL)
+    {
+        if (e->data == key)
+        {
+            return 0;
+            break;
+        }
+        e = e->next;
+    }
+    return 1;
+}
+
+//Print all the elements in the linked-list
+void print_list(Node *head)
+{
+    Node *cur = head;
+    for (cur = head; cur != NULL; cur = cur->next)
+        printf("%d ", cur->data);
+    printf("\n");
+}
+
+Node* add_last(Node *head, int k)
+{
+    Node* new_node = make_new_node(k);
+    if (head == NULL) 
+    {
+        head = new_node;
+    }
+    else
+    {
+        tail = head;
+        while (tail->next!=NULL)
+        {
+            tail = tail->next;
+        }
+        tail->next = new_node;
+    }
+    return head;
+}
+
+Node* add_first(int k)
+{
+    Node *new_node = make_new_node(k);
+    new_node->next = head;
+    head = new_node;
+    return head;
+}
+
+Node* add_after(Node *head, int u, int v)
+{
+    Node *p = head;
+    while (p->next != NULL)
+    {
+        if (p->data == v)
+        {
+            Node *new_node = make_new_node(u);
+            new_node->next = p->next;
+            p->next = new_node;
+            p = new_node->next;
+        }
+        else p = p->next;
+    }
+    return head;
+}
+
+Node* add_before(Node *head, int u, int v)
+{
+    Node *p = head;
+    if (p->data == v)
+    {
+        Node *new_node = make_new_node(u);
+        new_node->next = p;
+        head = new_node;
+    }
+    while (p->next!=NULL)
+    {
+        if (p->next->data == v)
+        {
+            Node *new_node = make_new_node(u);
+            new_node->next= p->next;
+            p->next=new_node;
+            p=new_node->next;
+        } else p=p->next;
+    }
+    return head;
+}
+
+Node *Delete_Node(int x)
+{
+    if (head->data==x)
+    {
+        head = head->next;
+    }
+    else {
+    Node* temp=head;
+    while (temp->next!=NULL)
+    {
+        if (temp->next->data==x)
+        {
+            temp->next=temp->next->next;
+        } else
+        temp=temp->next;
+    }
+    }
+    return head;
+}
+
+Node *reverse()
+{
+    if (head==NULL || head->next==NULL)
+    {
+        return head;
+    }
+    Node* temp = head;
+    Node *prev = NULL, *next = NULL;
+    while (temp != NULL) 
+    {
+        next = temp->next;
+        temp->next = prev;
+        prev = temp;
+        temp = next;
+    }
+    head = prev;
+    return head;
+}
+
+int main(void)
+{
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++)
+    {
+        scanf("%d", &v);
+        add_node(v);
+    }
+    char cmd[N];
+    while (1)
+    {
+        scanf("%s", cmd);
+        if (strcmp(cmd, "addlast") == 0)
+        {
+            int v;
+            scanf("%d", &v);
+            if (check_node(v))
+                add_last(head,v);
+        }
+        else if (strcmp(cmd, "addfirst") == 0)
+        {
+            int v;
+            scanf("%d", &v);
+            if (check_node(v))
+                add_first(v);
+        }
+        else if (strcmp(cmd,"addafter") == 0)
+        {
+            int u,v;
+            scanf("%d", &u); scanf("%d", &v);
+            if (check_node(u) == 1 && check_node(v) == 0)
+                add_after(head,u,v);
+        }
+        else if (strcmp(cmd,"addbefore") == 0)
+        {
+            int u,v;
+            scanf("%d", &u); scanf("%d", &v);
+            if (check_node(u) == 1 && check_node(v) == 0)
+                add_before(head,u,v);
+        }
+        else if (strcmp(cmd,"remove") == 0)
+        {
+            int k;
+            scanf("%d", &k); 
+            Delete_Node(k);
+        }
+        else if (strcmp(cmd,"reverse") == 0)
+        {
+            reverse();
+        }
+        else
+            break;
+    }
+    print_list(head);
+    
+    return 0;
+}

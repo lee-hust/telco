@@ -1,0 +1,133 @@
+//Binary tree
+/* Depth First Traversals: 
+(a) Inorder (Left, Root, Right) : 4 2 5 1 3 
+(b) Preorder (Root, Left, Right) : 1 2 4 5 3 
+(c) Postorder (Left, Right, Root) : 4 5 2 3 1 */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define N 1000000
+
+typedef struct Node
+{
+    int id;
+    struct Node* left;
+    struct Node* right;
+}
+Node;
+Node* root;
+Node *makeNode(int u)
+{
+    Node *p = (Node*)malloc(sizeof(Node));
+    p->id = u;
+    p->left = NULL;
+    p->right = NULL;
+    return p;
+}
+Node *find(int v, Node* r)
+{ //preorder
+    //return the pointer to a node having id=v on the tree rooted at r
+    if (r == NULL) return NULL;
+    if (r->id == v) return r;
+    Node *p = find(v,r->left); //find on the left sub-tree
+    if (p!=NULL) return p;
+    return find(v,r->right);
+}
+void addLeft(int u, int v)
+{
+    //make a node having id = u as the left child of the node having id = v if u does not exist
+    //else do nothing
+    Node *p = find(v,root);
+    if (p == NULL) return;
+    Node *q = find(u,root);
+    if (q != NULL) return;
+    if (p->left != NULL) return; //p has already had a left child
+    p->left = makeNode(u);
+}
+void addRight(int u, int v)
+{
+    //make a node having id = u as the right child of the node having id = v if u does not exist
+    //else do nothing
+    Node *p = find(v,root);
+    if (p == NULL) return;
+    Node *q = find(u,root);
+    if (q != NULL) return;
+    if (p->right != NULL) return; //p has already had a right child
+    p->right = makeNode(u);
+}
+
+void preOrder(Node *r)
+{
+    if (r==NULL) return;
+    printf("%d ", r->id);
+    preOrder(r->left);
+    preOrder(r->right);
+}
+void inOrder(Node *r)
+{
+    if (r == NULL) return;
+    inOrder(r->left);
+    printf("%d ", r->id);
+    inOrder(r->right);
+}
+void postOrder(Node *r)
+{
+    if (r==NULL) return;
+    postOrder(r->left);
+    postOrder(r->right);
+    printf("%d ", r->id); 
+} 
+void processMakeRoot()
+{
+    int u;
+    scanf("%d", &u);
+    root = makeNode(u);
+}
+void processAddLeftChild(){
+    int u,v;
+    scanf("%d", &u); scanf("%d", &v);
+    addLeft(u,v);
+}
+void processAddRightChild(){
+    int u,v;
+    scanf("%d", &u); scanf("%d", &v);
+    addRight(u,v);
+}
+
+int main(void)
+{
+    while (1)
+    {
+        char cmd[N];
+        scanf("%s", cmd);
+        if (strcmp(cmd, "MakeRoot") == 0)
+        {
+            processMakeRoot();
+        }
+        
+        else if (strcmp(cmd,"AddLeft") == 0)
+        {
+            processAddLeftChild();
+        }
+        else if (strcmp(cmd,"AddRight") == 0)
+        {
+            processAddRightChild();
+        }
+        else if (strcmp(cmd,"PreOrder") == 0)
+        {
+            preOrder(root);
+        }
+        else if (strcmp(cmd,"InOrder") == 0)
+        {
+            inOrder(root);
+        }
+        else if (strcmp(cmd,"PostOrder") == 0)
+        {
+            postOrder(root);
+        }
+        else
+            break;
+    }
+    
+    return 0;
+}

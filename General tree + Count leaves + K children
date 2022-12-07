@@ -1,0 +1,127 @@
+//General tree manipulation
+//Count leaves
+//CountKChildren
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Node
+{
+    int id;
+    struct Node* lm_child;
+    struct Node* r_sibling;
+}Node;
+Node *root;
+Node *makeNode(int u)
+{
+    Node *p = (Node*)malloc(sizeof(Node));
+    p->id = u;
+    p->lm_child = NULL;
+    p->r_sibling = NULL;
+    return p;
+}
+Node *find(int v, Node* r)
+{   //preorder
+    //return the pointer to a node having id=v on the tree rooted at r
+    if (r == NULL) return NULL;
+    if (r->id == v) return r;
+    Node *p = r->lm_child; //find on the left sub-tree
+    while(p!=NULL)
+    {
+        Node *q= find(v,p);
+        if (q!=NULL) return q;
+        p = p->r_sibling;
+    }
+    return NULL;
+}
+Node *add(Node* p, int u)
+{
+    if (p== NULL) return makeNode(u);
+    p->r_sibling = add(p->r_sibling, u);
+    return p;
+}
+void insert(int u, int v, Node *r)
+{
+    //tạo mới 1 nút u và chèn vào cuối danh sách nút con của nút v
+    Node *p = find(v,root);
+    if (p==NULL) return;
+    p->lm_child = add(p->lm_child,u);
+}
+
+int countLeaves(Node *r)
+{
+    if (r==NULL) return 0;
+    if (r->lm_child == NULL) return 1;
+    int count = 0;
+    Node *p = r->lm_child;
+    while (p!=NULL)
+    {
+        count+=countLeaves(p);
+        p=p->r_sibling;
+    }
+    return count;
+}
+int countKChildren(Node *r, int k) //đếm và trả về số nút có đúng k nút con trên cây gốc u
+{
+    if (r== NULL) return 0;
+    int count = 0; //keep track of the number of nodes having exactly k children on the tree rooted at r
+    int c = 0;
+    for (Node *p = r->lm_child; p!=NULL; p=p->r_sibling) c++;
+    if (c==k) count++;
+    for (Node *p = r->lm_child; p!=NULL; p=p->r_sibling) count+=countKChildren(p,k);
+    return count;
+}
+void processMakeRoot()
+{
+    int u;
+    scanf("%d", &u);
+    root = makeNode(u);
+}
+void processInsert(){
+    int u,v;
+    scanf("%d", &u); scanf("%d", &v);
+    insert(u,v,root);
+}
+void processCountLeaves()
+{
+    int u;
+    scanf("%d", &u);
+    printf("%d\n",countLeaves(find(u,root)));
+}
+
+void processCountKChildren()
+{
+    int u;
+    int k;
+    scanf("%d", &u);
+    scanf("%d", &k);
+    printf("%d\n",countKChildren(find(u,root),k));
+}
+int main(void)
+{
+    while (1)
+    {
+        char cmd[1000000];
+        scanf("%s", cmd);
+        if (strcmp(cmd, "MakeRoot") == 0)
+        {
+            processMakeRoot();
+        }
+        else if (strcmp(cmd,"Insert") == 0)
+        {
+            processInsert();
+        }
+        else if (strcmp(cmd,"CountLeaves") == 0)
+        {
+            processCountLeaves();
+        }
+        else if (strcmp(cmd,"CountKChildren") == 0)
+        {
+            processCountKChildren();
+        }
+        else
+            break;
+    }
+    
+    return 0;
+}

@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <string.h>
+#define N 1010
+
+int main(void)
+{
+    int n;
+    int m; //number of constraints
+    int constraints[N][2];
+    int x[N];
+    int c[N][N];
+    int visited[N]; 
+    scanf("%d", &n);
+    for (int i = 1; i <= n; i++)
+        scanf("%d", &x[i]);
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=n;j++)
+        {
+            scanf("%d",&c[i][j]);
+        }
+    }
+    scanf("%d", &m);
+    for (int k = 0; k < m; k++)
+    {
+        scanf("%d %d", &constraints[k][0], &constraints[k][1]);
+    }
+    for (int i = 1; i <= n; i++)
+        visited[i] = 0;
+    int check = 1;
+    for (int i = 1; i <= n; i++)
+    {
+        visited[x[i]] = 1;
+        for(int j = 1; j <= n; j++)
+        {
+            if (x[i] == constraints[j][1] && visited[constraints[j][0]] == 0)
+            {
+                check = 0;
+                break;
+            }
+            else if (x[i] == constraints[j][0] && visited[constraints[j][1]] == 1)
+            {
+                check = 0;
+                break;
+            }
+            else continue;
+        }
+    }
+    if (check == 0)
+        printf("-1\n");
+    else
+    {
+        int distance = 0;
+        for (int i = 1; i<=n; i++)
+        {
+            distance+=c[x[i]][x[i+1]];
+        }
+        distance+=c[x[n]][x[1]];
+        printf("%d\n", distance);   
+    }
+    return 0;
+}

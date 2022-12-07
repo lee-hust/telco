@@ -1,0 +1,123 @@
+//General tree manipulation
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define N 1000000
+
+typedef struct Node
+{
+    int id;
+    struct Node* lm_child;
+    struct Node* r_sibling;
+}Node;
+Node *root;
+Node *makeNode(int u)
+{
+    Node *p = (Node*)malloc(sizeof(Node));
+    p->id = u;
+    p->lm_child = NULL;
+    p->r_sibling = NULL;
+    return p;
+}
+Node *find(int v, Node* r)
+{   //preorder
+    //return the pointer to a node having id=v on the tree rooted at r
+    if (r == NULL) return NULL;
+    if (r->id == v) return r;
+    Node *p = r->lm_child; //find on the left sub-tree
+    while(p!=NULL)
+    {
+        Node *q= find(v,p);
+        if (q!=NULL) return q;
+        p = p->r_sibling;
+    }
+    return NULL;
+}
+Node *add(Node* p, int u)
+{
+    if (p== NULL) return makeNode(u);
+    p->r_sibling = add(p->r_sibling, u);
+    return p;
+}
+void insert(int u, int v, Node *r)
+{
+    //tạo mới 1 nút u và chèn vào cuối danh sách nút con của nút v
+    Node *p = find(v,root);
+    if (p==NULL) return;
+    p->lm_child = add(p->lm_child,u);
+}
+void preOrder(Node *r)
+{
+    if (r==NULL) return;
+    printf("%d ", r->id);
+    preOrder(r->lm_child);
+    preOrder(r->r_sibling);
+}
+void inOrder(Node* r)
+{
+    if (r== NULL) return;
+    if (r->lm_child)
+    {
+        inOrder(r->lm_child);
+    }
+    printf("%d ",r->id);
+    if(r->lm_child == NULL) return;
+    Node* temp = r->lm_child->r_sibling;
+    while(temp)
+    {
+        inOrder(temp);
+        temp = temp->r_sibling;
+    }
+}
+void postOrder(Node *r)
+{
+    if (r==NULL) return;
+    postOrder(r->lm_child);
+    printf("%d ", r->id);
+    postOrder(r->r_sibling);
+}
+void processMakeRoot()
+{
+    int u;
+    scanf("%d", &u);
+    root = makeNode(u);
+}
+void processInsert(){
+    int u,v;
+    scanf("%d", &u); scanf("%d", &v);
+    insert(u,v,root);
+}
+int main(void)
+{
+    while (1)
+    {
+        char cmd[N];
+        scanf("%s", cmd);
+        if (strcmp(cmd, "MakeRoot") == 0)
+        {
+            processMakeRoot();
+        }
+        
+        else if (strcmp(cmd,"Insert") == 0)
+        {
+            processInsert();
+        }
+        else if (strcmp(cmd,"PreOrder") == 0)
+        {
+            preOrder(root);
+        }
+        
+        else if (strcmp(cmd,"InOrder") == 0)
+        {
+            inOrder(root);
+        }
+        else if (strcmp(cmd,"PostOrder") == 0)
+        {
+            postOrder(root);
+        }
+        else
+            break;
+    }
+    
+    return 0;
+}

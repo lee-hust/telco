@@ -1,0 +1,79 @@
+//Sum pair of sequence equal to a number
+//Cho dãy a1, a2, ..., an trong đó các phần tử đôi 
+//một khác nhau và 1 giá trị nguyên dương M. Hãy đếm số Q các cặp (i,j) sao cho 1 <= i < j <= n và ai + aj = M.
+
+#include <stdio.h>
+#include <stdbool.h>
+#define N 1000000
+int n;
+int M;
+int input[N];
+
+void merge(int A[], int first, int mid, int last)
+{
+    int tempA[N]; 
+    int first1 = first;
+    int last1 = mid;
+    int first2 = mid+1;
+    int last2 = last;
+    int index = first1;
+    for(;(first1<=last1) && (first2<=last2);++index) //So sánh hai subarrays và copy vào arry temp
+    {
+        if (A[first1] < A[first2])
+        {
+            tempA[index] = A[first1];
+            first1++;
+        }
+        else
+        {
+            tempA[index] = A[first2];
+            first2++;
+        }
+    }
+    
+    for (; first1<=last1; first1++,index++) //Array 2 đã kết thúc, copy phần còn lại của array 1 vào temp
+        tempA[index] = A[first1];
+    for (; first2<=last2; first2++,index++) //Array 1 đã kết thúc, copy phần còn lại của array 2 vào temp
+        tempA[index] = A[first2];
+    for (index = first; index <= last; index++) //Copy temp vào A
+        A[index] = tempA[index];
+}
+
+void mergeSort(int A[], int first, int last)
+{
+    if (first < last)
+    {
+        int mid = (first+last)/2;
+        mergeSort(A,first,mid);
+        mergeSort(A,mid+1,last);
+        merge(A,first,mid,last);
+    }
+}
+int countpairs(int arr[], int sum, int n)
+{
+    int count = 0;
+    int i = 0; int j = n-1;
+    while (i < j)
+    {
+        if (arr[i] + arr[j] == sum)
+        {
+            count++;
+            i++;
+            j--;
+        }
+        else if (arr[i] + arr[j] < sum)
+            i = i+1;
+        else j = j-1;
+    }
+    return count;
+}
+int main(void)
+{
+    scanf("%d", &n);
+    scanf("%d", &M);
+    for (int i = 0; i < n; i++)
+        scanf("%d", &input[i]);
+    mergeSort(input,0,n-1);
+    printf("%d\n", countpairs(input,M,n));
+    return 0;
+}

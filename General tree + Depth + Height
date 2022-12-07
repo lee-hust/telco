@@ -1,0 +1,115 @@
+//General tree manipulation
+//Depth + Height
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+#define N 1000000
+typedef struct Node
+{
+    int id;
+    struct Node* lm_child;
+    struct Node* r_sibling;
+}Node;
+Node *root;
+Node *makeNode(int u)
+{
+    Node *p = (Node*)malloc(sizeof(Node));
+    p->id = u;
+    p->lm_child = NULL;
+    p->r_sibling = NULL;
+    return p;
+}
+Node *find(int v, Node* r)
+{   //preorder
+    //return the pointer to a node having id=v on the tree rooted at r
+    if (r == NULL) return NULL;
+    if (r->id == v) return r;
+    Node *p = r->lm_child; //find on the left sub-tree
+    while(p!=NULL)
+    {
+        Node *q= find(v,p);
+        if (q!=NULL) return q;
+        p = p->r_sibling;
+    }
+    return NULL;
+}
+Node *add(Node* p, int u)
+{
+    if (p== NULL) return makeNode(u);
+    p->r_sibling = add(p->r_sibling, u);
+    return p;
+}
+void insert(int u, int v, Node *r)
+{
+    //tạo mới 1 nút u và chèn vào cuối danh sách nút con của nút v
+    Node *p = find(v,root);
+    if (p==NULL) return;
+    p->lm_child = add(p->lm_child,u);
+}
+void processMakeRoot()
+{
+    int u;
+    scanf("%d", &u);
+    root = makeNode(u);
+}
+void processInsert(){
+    int u,v;
+    scanf("%d", &u); scanf("%d", &v);
+    insert(u,v,root);
+}
+int max(int a, int b)
+{
+    if (a>b) return a;
+    else return b;
+}
+int height(Node* r)
+{
+    int count = 0;
+    if (r == NULL) return 0;
+    Node* temp = r->lm_child;
+    while (temp != NULL)
+    {
+        count = max(count, height(temp));
+        temp = temp->r_sibling;
+    }
+    return count+1;
+}
+int depth(int u, int curDep, Node* cur)
+{
+    if (cur == NULL) return 0;
+    if (cur->id == u) return curDep;
+    int tmpDep = depth(u,curDep+1,cur->lm_child);
+    if (tmpDep != 0)
+        return tmpDep;
+    return depth(u,curDep,cur->r_sibling);
+}
+int main(void)
+{
+    for (; ;)
+    {
+        char cmd[N];
+        scanf("%s", cmd);
+        if (strcmp(cmd, "MakeRoot") == 0)
+        {
+            processMakeRoot();
+        }
+        
+        else if (strcmp(cmd,"Insert") == 0)
+        {
+            processInsert();
+        }
+        else if (strcmp(cmd,"Height") == 0)
+        {
+            int u; scanf("%d", &u);
+            printf("%d\n", height(find(u,root)));
+        }
+        else if (strcmp(cmd,"Depth") == 0)
+        {
+            int u; scanf("%d", &u);
+            printf("%d\n", depth(u,0,root)+1);
+        }
+        else if (strcmp(cmd,"*") == 0)
+            return 0;
+    }
+}

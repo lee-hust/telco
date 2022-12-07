@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef struct Node
+{
+    int data;
+    struct Node* next;
+}Node;
+Node *head = NULL;
+
+Node *make_new_node(int v)
+{
+    Node *p = (Node *)malloc(sizeof(Node));
+    p->data = v;
+    p->next = NULL;
+    return p;
+}
+
+int stackEmpty()
+{
+    return head == NULL;
+}
+void PUSH(int num)
+{
+    Node* newnode = make_new_node(num);
+    newnode->next = head;
+    head = newnode;
+}
+
+void POP()
+{
+    if (stackEmpty())
+    {
+        printf("NULL\n");
+        return;
+    }
+    Node* temp = head;
+    int v = head->data;
+    head = head->next;
+    free(temp);
+    printf("%d\n", v);
+}
+
+int main(void)
+{
+    char order[50];
+    while(1)
+    {
+        scanf("%s", order);
+        if (strcmp(order,"PUSH") == 0)
+        {
+            int x;
+            scanf("%d", &x);
+            PUSH(x);
+        }
+        else if (strcmp(order, "POP") == 0)
+        {
+            POP();
+        }
+        else 
+            break;
+    }
+    return 0;
+}
