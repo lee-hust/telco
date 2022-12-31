@@ -1,0 +1,3 @@
+D:/C C++/Inversion/cmake-build-debug/CMakeFiles/Inversion.dir
+D:/C C++/Inversion/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/C C++/Inversion/cmake-build-debug/CMakeFiles/rebuild_cache.dir
