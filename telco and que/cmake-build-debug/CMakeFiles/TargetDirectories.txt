@@ -1,0 +1,3 @@
+D:/C C++/telco and que/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/C C++/telco and que/cmake-build-debug/CMakeFiles/telco_and_que.dir
+D:/C C++/telco and que/cmake-build-debug/CMakeFiles/rebuild_cache.dir
